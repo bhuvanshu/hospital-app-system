@@ -1,0 +1,123 @@
+warning: in the working copy of 'src/main/java/com/homas/hospital_ms/HospitalMsApplication.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main/resources/application.properties', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/main/java/com/homas/hospital_ms/HospitalMsApplication.java b/src/main/java/com/homas/hospital_ms/HospitalMsApplication.java[m
+[1mindex e3b6288..1923817 100644[m
+[1m--- a/src/main/java/com/homas/hospital_ms/HospitalMsApplication.java[m
+[1m+++ b/src/main/java/com/homas/hospital_ms/HospitalMsApplication.java[m
+[36m@@ -2,9 +2,8 @@[m [mpackage com.homas.hospital_ms;[m
+ [m
+ import org.springframework.boot.SpringApplication;[m
+ import org.springframework.boot.autoconfigure.SpringBootApplication;[m
+[31m-import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;[m
+ [m
+[31m-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)[m
+[32m+[m[32m@SpringBootApplication[m
+ public class HospitalMsApplication {[m
+ [m
+     public static void main(String[] args) {[m
+[1mdiff --git a/src/main/java/com/homas/hospital_ms/model/Patient.java b/src/main/java/com/homas/hospital_ms/model/Patient.java[m
+[1mindex a8436e3..10b3eb6 100644[m
+[1m--- a/src/main/java/com/homas/hospital_ms/model/Patient.java[m
+[1m+++ b/src/main/java/com/homas/hospital_ms/model/Patient.java[m
+[36m@@ -1,17 +1,29 @@[m
+ package com.homas.hospital_ms.model;[m
+ [m
+[31m-public class Patient {[m
+[32m+[m[32mimport jakarta.persistence.*;[m
+ [m
+[32m+[m[32m@Entity[m
+[32m+[m[32m@Table(name = "patients")[m
+[32m+[m[32mpublic class Patient {[m
+[32m+[m[32m    @Id[m
+[32m+[m[32m    @GeneratedValue(strategy = GenerationType.IDENTITY)[m
+     private Long id;[m
+     private String name;[m
+     private String email;[m
+     private String phone;[m
+[32m+[m[32m    public Patient() {[m
+[32m+[m[32m    }[m
+     public Patient(Long id,String name,String email,String phone){[m
+         this.id=id;[m
+         this.name=name;[m
+         this.email=email;[m
+         this.phone=phone;[m
+     }[m
+[32m+[m[32m    public Patient(String name, String email, String phone) {[m
+[32m+[m[32m        this.name = name;[m
+[32m+[m[32m        this.email = email;[m
+[32m+[m[32m        this.phone = phone;[m
+[32m+[m[32m    }[m
+ [m
+     public Long getId() {[m
+         return id;[m
+[1mdiff --git a/src/main/java/com/homas/hospital_ms/repository/PatientRepository.java b/src/main/java/com/homas/hospital_ms/repository/PatientRepository.java[m
+[1mindex 415411d..03879b2 100644[m
+[1m--- a/src/main/java/com/homas/hospital_ms/repository/PatientRepository.java[m
+[1m+++ b/src/main/java/com/homas/hospital_ms/repository/PatientRepository.java[m
+[36m@@ -1,4 +1,8 @@[m
+ package com.homas.hospital_ms.repository;[m
+ [m
+[31m-public class PatientRepository {[m
+[31m-}[m
+[32m+[m[32mimport com.homas.hospital_ms.model.Patient;[m
+[32m+[m[32mimport org.springframework.data.jpa.repository.JpaRepository;[m
+[32m+[m
+[32m+[m[32mpublic interface PatientRepository extends JpaRepository<Patient, Long> {[m
+[32m+[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/src/main/java/com/homas/hospital_ms/service/PatientService.java b/src/main/java/com/homas/hospital_ms/service/PatientService.java[m
+[1mindex d4c3af6..63f76b8 100644[m
+[1m--- a/src/main/java/com/homas/hospital_ms/service/PatientService.java[m
+[1m+++ b/src/main/java/com/homas/hospital_ms/service/PatientService.java[m
+[36m@@ -1,29 +1,23 @@[m
+ package com.homas.hospital_ms.service;[m
+ [m
+ import com.homas.hospital_ms.model.Patient;[m
+[32m+[m[32mimport com.homas.hospital_ms.repository.PatientRepository;[m
+ import org.springframework.stereotype.Service;[m
+[31m-import java.util.List;[m
+[31m-import java.util.ArrayList;[m
+[32m+[m
+ [m
+ @Service[m
+ public class PatientService {[m
+ [m
+[31m-    private final List<Patient> patients = new ArrayList<>();[m
+[31m-    public PatientService() {[m
+[31m-        patients.add([m
+[31m-                new Patient(1L, "John Doe", "john.doe@example.com", "123-456-7890"));[m
+[31m-        patients.add([m
+[31m-                new Patient(2L, "Jane Smith", "jane.smith@example.com", "098-765-4321"));[m
+[31m-    }[m
+[32m+[m[32m    private final PatientRepository patientRepository;[m
+[32m+[m[32m    public PatientService(PatientRepository patientRepository) {[m
+[32m+[m[32m        this.patientRepository = patientRepository;[m
+ [m
+[32m+[m[32m            }[m
+     public Patient getPatientById(Long id) {[m
+ [m
+[31m-        for (Patient patient : patients) {[m
+[31m-            if (id.equals(patient.getId())) {[m
+[31m-                return patient;[m
+[31m-            }[m
+[31m-        }[m
+[31m-        return null;[m
+[32m+[m[32m        return patientRepository.findById(id).orElse(null);[m
+     }[m
+[31m-[m
+[32m+[m[32m    public Patient savePatient(Patient patient) {[m
+[32m+[m[32m        return patientRepository.save(patient);[m
+     }[m
+[32m+[m[32m        }[m
+\ No newline at end of file[m
+[1mdiff --git a/src/main/resources/application.properties b/src/main/resources/application.properties[m
+[1mindex 82f693c..fab5b26 100644[m
+[1m--- a/src/main/resources/application.properties[m
+[1m+++ b/src/main/resources/application.properties[m
+[36m@@ -1 +1,5 @@[m
+ spring.application.name=Hospital_MS[m
+[32m+[m[32mspring.datasource.url=jdbc:postgresql://localhost:5432/hospital_db[m
+[32m+[m[32mspring.datasource.username=postgres[m
+[32m+[m[32mspring.datasource.password=${DB_PASSWORD}[m
+[32m+[m[32mspring.jpa.hibernate.ddl-auto=update[m
