@@ -1,5 +1,5 @@
 spring.application.name=Hospital_MS
 spring.datasource.url=jdbc:postgresql://localhost:5432/hospital_db
 spring.datasource.username=postgres
-spring.datasource.password=${DB_PASSWORD}
+spring.datasource.password={password}
 spring.jpa.hibernate.ddl-auto=update

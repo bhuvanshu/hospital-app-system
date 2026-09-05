@@ -3,7 +3,8 @@ package com.homas.hospital_ms.service;
 import com.homas.hospital_ms.model.Patient;
 import com.homas.hospital_ms.repository.PatientRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class PatientService {
